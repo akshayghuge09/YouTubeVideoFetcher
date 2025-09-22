@@ -9,28 +9,27 @@ const App = () => {
   const [loading, setLoading] = useState(false);
 
  
- const fetchVideos = async (query = "") => {
+const fetchVideos = async (query = "") => {
   setLoading(true);
   try {
-    const url = "http://localhost:5000/videos/get"; 
+    const url = query
+      ? `http://localhost:5000/videos/search?q=${query}`
+      : `http://localhost:5000/videos`;
     const res = await axios.get(url);
-    
-    const parsedData = res.data.map(video => ({
-      ...video,
-      thumbnails: video.thumbnails ? JSON.parse(video.thumbnails) : null
-    }));
 
-    setVideos(parsedData);
+    // ✅ No JSON.parse here
+    setVideos(res.data);
   } catch (err) {
     console.error("Error fetching videos:", err);
   }
   setLoading(false);
 };
+
   useEffect(() => {
     fetchVideos();
   }, []);
 
-
+console.log(videos);
   const columns = [
     {
       title: "Thumbnail",
